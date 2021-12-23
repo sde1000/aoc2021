@@ -26,8 +26,8 @@ class Cuboid(tuple):
         return not all(n in range(-50, 52) for a in self for n in a)
 
     def intersection(self, other):
-        c = tuple(intersect(a, b) for a, b in zip(self, other))
-        return Cuboid(c) if all(c) else None
+        c = Cuboid(intersect(a, b) for a, b in zip(self, other))
+        return c if all(c) else None
 
     def cubes(self):
         return reduce(mul, (a[1] - a[0] + 1 for a in self))
@@ -40,8 +40,8 @@ def reboot(steps, skip_large=False):
             continue
         new = []
         for c, cnt in list(core.items()):
-            if (i := c.intersection(cuboid)) is not None:
-                core[i] += -cnt
+            if cnt and (i := c.intersection(cuboid)) is not None:
+                core[i] -= cnt
         if ins:
             core[cuboid] += 1
     return sum(cnt * c.cubes() for c, cnt in core.items())
